@@ -5,5 +5,16 @@ html
 	body
 		header
 			h1= pageTitle
+		section.login
+			ul
+				if session.isLoggedIn
+					li
+						a(href="/logout") Logout
+				else 
+					li
+						a(href="/login") Login
+					li
+						a(href="/signup") Create Account
+						
 		section.content
 			block content

@@ -1,3 +1,4 @@
+var errors = require('./errors');
 
 module.exports = function (app) {
 
@@ -5,4 +6,7 @@ module.exports = function (app) {
 	app.get('/', function (req, res) {
 		res.render('home.jade');
 	})
+
+	// error handlers
+	errors(app);
 }
