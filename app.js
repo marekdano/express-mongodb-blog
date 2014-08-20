@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var express = require('express');
+require('./models/user');
 var routes = require('./routes');
 
 mongoose.connect('mongodb://localhost', function (err) {
@@ -21,6 +22,7 @@ mongoose.connect('mongodb://localhost', function (err) {
 		next();
 	})
 
+	
 	routes(app);
 
 	app.listen(3000, function () {

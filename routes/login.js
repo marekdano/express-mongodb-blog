@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
-var User = require('./../models/user.js');
-mongoose.model('User');
+var User = mongoose.model('User');
 
 var cleanString = require('../helpers/cleanString'),
 	hash = require('../helpers/hash'),
@@ -14,12 +13,9 @@ module.exports = function (app) {
 
 	// create new account
 	app.post('/signup', function (req, res, next) {
-		//console.log(req.param('email'));
-		console.log(req.param('pass'));
 		var email = cleanString(req.param('email'));
 		var pass = cleanString(req.param('pass'));
-		console.log(email);
-		console.log(pass);
+	
 		if(!(email && pass)) {
 			return invalid();
 		}
