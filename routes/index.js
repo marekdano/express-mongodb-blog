@@ -1,5 +1,6 @@
 var errors = require('./errors');
 var login = require('./login');
+var posts = require('./posts');
 
 module.exports = function (app) {
 
@@ -10,6 +11,9 @@ module.exports = function (app) {
 
 	// login and logout handlers
 	login(app);
+
+	// blog post handlers
+	posts(app);
 
 	// error handlers
 	errors(app);

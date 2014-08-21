@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var express = require('express');
-require('./models/user');
+var user = require('./models/user');
+var blogpost = require('./models/blogpost');
 var routes = require('./routes');
 
 mongoose.connect('mongodb://localhost', function (err) {
