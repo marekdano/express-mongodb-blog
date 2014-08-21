@@ -55,4 +55,48 @@ module.exports = function (app) {
 			return res.render('signup.jade', { invalid: true });
 		}
 	});
+
+	app.get('/login', function (req, res) {
+		return res.render('login.jade');
+	})
+
+	app.post('/login', function (req, res, next) {
+		// validate input
+		var email = cleanString(req.param('email'));
+		var pass = cleanString(req.param('pass'));
+		if(!(email && pass)) {
+			return invalid();
+		}
+
+		// user friendly
+		email = email.toLowerCase();
+		
+		// query mongodb
+		User.findById(email, function (err, user) {
+			if (err) return next(err);
+
+			if (!user) {
+				return invalid();
+			}
+
+			// check pass
+			if (user.hash != hash(pass, user.salt)) {
+				return invalid();
+			}
+
+			req.session.isLoggedIn = true;
+			req.session.user = email;
+			res.redirect('/');
+		})
+
+		function invalid() {
+			return res.render('login.jade', { invalid: true });
+		}	
+	})
+
+	app.get('/logout', function (req, res) {
+		req.session.isLoggedIn = false;
+		req.session.user = '';
+		return res.redirect('/');
+	})
 }
