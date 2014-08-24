@@ -13,6 +13,8 @@ module.exports = function (app) {
 
 	// create new account
 	app.post('/signup', function (req, res, next) {
+		var firstName = cleanString(req.param('firstName'));
+		var secondName = cleanString(req.param('secondName'));
 		var email = cleanString(req.param('email'));
 		var pass = cleanString(req.param('pass'));
 	
@@ -33,6 +35,10 @@ module.exports = function (app) {
 				var user = { _id: email };
 				user.salt = bytes.toString('utf8');
 				user.hash = hash(pass, user.salt);
+
+				user.name = {};
+				user.name.first = firstName;
+				user.name.last = secondName;
 
 				User.create(user, function (err, newUser) {
 					if (err) {

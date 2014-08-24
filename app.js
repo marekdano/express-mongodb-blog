@@ -1,9 +1,14 @@
 var mongoose = require('mongoose');
 var express = require('express');
+
+// add mongoose query and promise support to express
+require('express-mongoose');
+
 var user = require('./models/user');
 var blogpost = require('./models/blogpost');
 var routes = require('./routes');
 
+mongoose.set('debug', true);
 mongoose.connect('mongodb://localhost', function (err) {
 	if (err) throw err;
 	console.log('connected!');
@@ -23,7 +28,6 @@ mongoose.connect('mongodb://localhost', function (err) {
 		next();
 	})
 
-	
 	routes(app);
 
 	app.listen(3000, function () {

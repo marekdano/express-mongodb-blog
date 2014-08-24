@@ -5,7 +5,7 @@ var BlogPost = mongoose.model('BlogPost');
 module.exports = function (app) {
 	// create
 	//console.log("loggedIn: " + loggedIn);
-	app.get("/post/create", loggedIn, function (req, res) {
+	app.get('/post/create', loggedIn, function (req, res) {
 		res.render('post/create.jade');
 	});
 
@@ -25,4 +25,54 @@ module.exports = function (app) {
 
 		// notify twitter that we published a new post using model hook
 	});
+
+	// read
+	app.get('/post/:id', function (req, res, next) {
+		var query = BlogPost.findById(req.param('id'));
+
+		query.populate('author');
+
+		query.exec(function (err, post) {
+			if (err) return next(err);
+
+			if(!post) return next();	// 404
+
+			res.render('post/view.jade', { post: post }); 
+		})
+	})
+
+	// update
+	app.get('/post/edit/:id', loggedIn, function (req, res, next) {
+		res.render('post/create.jade', {
+			post: BlogPost.findById(req.param('id'))
+		});
+	})
+
+	app.post('/post/edit/:id', loggedIn, function (req, res, next) {
+		BlogPost.edit(req, function (err) {
+			if (err) return next(err);
+			res.redirect('/post/' + req.param('id'));
+		})
+	})
+
+	// delete
+	app.get('/psot/remove/:id', loggedIn, function (req, res, next) {
+		var id = req.param('id');
+
+		BlogPost.findOne({ _id: id }, function (err, post) {
+			if (err) return next(err);
+
+			// validate loggged is user authored this post
+			if (post.author != req.session.user) {
+				return res.send(403);
+			}
+
+			post.remove(function (err) {
+				if (err) return next(err);
+
+				//TODO display a confirmation msg to user
+				res.redirect('/');
+			})
+		})
+	})
 }
