@@ -6,6 +6,7 @@ require('express-mongoose');
 
 var user = require('./models/user');
 var blogpost = require('./models/blogpost');
+var comment = require('./models/comment');
 var routes = require('./routes');
 
 mongoose.set('debug', true);

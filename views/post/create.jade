@@ -2,17 +2,23 @@
 extends ../layout
 
 block content
-	action = post ? "/post/edit/"+post.id : "/post/create"
-	title = post ? post.title : ''
-	body = post ? post.body : ''
-
-	form(method="post", action=action)
+	if post
+		form_action = '/post/edit/'+post.id
+		title = post.title
+		textbody = post.body
+	else
+		form_action = '/post/create'
+		title = ''
+		textbody = ''
+	form(method="post", action=form_action)
 		ul
 			li
 				label(for="title") Title
-				input#title(name="title", value=title)
+				input#title(name="title", value= title)
 			li
 				label(for="body") Body
-				textarea#body(name="body") = body
+				textarea#body(name="body")= textbody
 			li
 				input(type="submit", value="Save")
+
+	my_var = 'Marek'

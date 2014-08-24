@@ -1,6 +1,7 @@
 var loggedIn = require('../helpers/loggedIn');
 var mongoose = require('mongoose');
 var BlogPost = mongoose.model('BlogPost');
+var Comment = mongoose.model('Comment');
 
 module.exports = function (app) {
 	// create
@@ -28,16 +29,22 @@ module.exports = function (app) {
 
 	// read
 	app.get('/post/:id', function (req, res, next) {
-		var query = BlogPost.findById(req.param('id'));
+		var id = req.param('id');
 
-		query.populate('author');
+		// this promise which I don't know. I should learn about it :)
+		var promise = BlogPost.findComments(id)
+							  .sort('created')
+							  .select('-_id') // exclude the _id
+							  .exec();
+
+		var query = BlogPost.findById(req.param('id')).populate('author');
 
 		query.exec(function (err, post) {
 			if (err) return next(err);
 
 			if(!post) return next();	// 404
 
-			res.render('post/view.jade', { post: post }); 
+			res.render('post/view.jade', { post: post, comments: promise }); 
 		})
 	})
 
@@ -56,7 +63,7 @@ module.exports = function (app) {
 	})
 
 	// delete
-	app.get('/psot/remove/:id', loggedIn, function (req, res, next) {
+	app.get('/post/remove/:id', loggedIn, function (req, res, next) {
 		var id = req.param('id');
 
 		BlogPost.findOne({ _id: id }, function (err, post) {
@@ -64,6 +71,7 @@ module.exports = function (app) {
 
 			// validate loggged is user authored this post
 			if (post.author != req.session.user) {
+				console.log("Got error in post.author != req.session.user");
 				return res.send(403);
 			}
 
@@ -74,5 +82,24 @@ module.exports = function (app) {
 				res.redirect('/');
 			})
 		})
+	})
+
+	// comments
+	app.post('/post/comment/:id', loggedIn, function (req, res, next) {
+		var id = req.param('id');
+		var text = req.param('text');
+		var author = req.session.user;
+
+		Comment.create({
+			post: id,
+			text: text,
+			author: author },
+			function (err, comment) {
+				if (err) return next(err);
+
+				// TODO probably want to do this all with xhr
+				res.redirect('/post/' + id);
+			}
+		)
 	})
 }
