@@ -2,13 +2,17 @@
 extends ../layout
 
 block content
-	form(method="post", action="/post/create")
+	action = post ? "/post/edit/"+post.id : "/post/create"
+	title = post ? post.title : ''
+	body = post ? post.body : ''
+
+	form(method="post", action=action)
 		ul
 			li
 				label(for="title") Title
-				input#title(name="title")
+				input#title(name="title", value=title)
 			li
 				label(for="body") Body
-				input#body(name="body")
+				textarea#body(name="body") = body
 			li
 				input(type="submit", value="Save")
