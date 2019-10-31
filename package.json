@@ -15,9 +15,9 @@
     "url": "https://github.com/marekdanolab/express-mongodb-blog/issues"
   },
   "dependencies": {
-    "mongoose": "~3.8.15",
-    "express": "~3.16.7",
-    "jade": "~1.5.0",
+    "mongoose": "~5.7.7",
+    "express": "~4.17.1",
+    "jade": "~1.11.0",
     "mongoose-lifecycle": "~1.0.0",
     "express-mongoose": "~0.1.0"
   }
